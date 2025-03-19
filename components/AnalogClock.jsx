@@ -2,18 +2,12 @@
 import { useEffect, useState } from 'react';
 
 export default function AnalogClock() {
-  // Gunakan useState dengan nilai awal null untuk mencegah rendering awal di server
   const [time, setTime] = useState(null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Tandai komponen sudah di-mount
     setMounted(true);
-    
-    // Set waktu awal setelah komponen di-mount
     setTime(new Date());
-    
-    // Update waktu setiap detik
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
@@ -23,11 +17,9 @@ export default function AnalogClock() {
     };
   }, []);
 
-  // Format hari dan tanggal
   const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
   const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-  
-  // Hanya render konten utama jika komponen sudah di-mount
+
   if (!mounted) {
     return (
       <div className="flex flex-col items-center">
@@ -39,7 +31,6 @@ export default function AnalogClock() {
     );
   }
 
-  // Menghitung sudut untuk jam, menit, dan detik
   const secondsRatio = time.getSeconds() / 60;
   const minutesRatio = (secondsRatio + time.getMinutes()) / 60;
   const hoursRatio = (minutesRatio + time.getHours()) / 12;
@@ -49,22 +40,19 @@ export default function AnalogClock() {
   const month = months[time.getMonth()];
   const year = time.getFullYear();
 
-  // Buat array untuk posisi angka jam
   const hourPositions = [...Array(12)].map((_, i) => {
     const angle = i * 30 * Math.PI / 180;
-    // Bulatkan nilai ke 2 desimal untuk konsistensi
     const top = Math.round((50 - 42 * Math.cos(angle)) * 100) / 100;
     const left = Math.round((50 + 42 * Math.sin(angle)) * 100) / 100;
-    
+
     return { top, left, hour: i === 0 ? 12 : i };
   });
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Jam Analog */}
+    <div className="flex flex-col items-center justify-center md:flex-row">
+      {/* Analog Clock */}
       <div className="relative w-[300px] h-[300px] mb-6">
         <div className="relative w-full h-full rounded-full border-4 border-pink-400 bg-white shadow-lg">
-          {/* Angka jam */}
           {hourPositions.map(({ top, left, hour }) => (
             <div
               key={hour}
@@ -72,14 +60,13 @@ export default function AnalogClock() {
               style={{
                 top: `${top}%`,
                 left: `${left}%`,
-                transform: 'translate(-50%, -50%)'
+                transform: 'translate(-50%, -50%)',
               }}
             >
               {hour}
             </div>
           ))}
 
-          {/* Jarum jam */}
           <div
             className="absolute w-2.5 h-[25%] bg-pink-800 rounded-full"
             style={{
@@ -90,7 +77,6 @@ export default function AnalogClock() {
             }}
           />
 
-          {/* Jarum menit */}
           <div
             className="absolute w-2 h-[35%] bg-pink-600 rounded-full"
             style={{
@@ -101,7 +87,6 @@ export default function AnalogClock() {
             }}
           />
 
-          {/* Jarum detik */}
           <div
             className="absolute w-1 h-[40%] bg-red-500 rounded-full"
             style={{
@@ -112,13 +97,12 @@ export default function AnalogClock() {
             }}
           />
 
-          {/* Titik tengah */}
           <div className="absolute w-4 h-4 bg-pink-700 rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
         </div>
       </div>
-      
-      {/* Tampilan Hari dan Tanggal */}
-      <div className="text-center">
+
+      {/* Date & Time */}
+      <div className="text-center md:text-left">
         <h2 className="text-2xl font-bold text-pink-700">{dayName}</h2>
         <p className="text-xl text-gray-700">{day} {month} {year}</p>
       </div>

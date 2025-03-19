@@ -10,40 +10,41 @@ export default function ActivityImage() {
   const [author, setAuthor] = useState('');
   const [fadeState, setFadeState] = useState('in'); // 'in' atau 'out'
 
-  // Fungsi untuk mendapatkan quotes dari API gratis
+  // Fetch quote from the API
   const fetchQuote = async () => {
     try {
-      // Mulai transisi fade out
       setFadeState('out');
-      
-      // Tunggu fade out selesai
+
       setTimeout(async () => {
         try {
-          // Gunakan API type.fit yang gratis dan tidak memerlukan token
-          const response = await fetch('https://type.fit/api/quotes');
-          
-          if (!response.ok) throw new Error('API error');
-          
-          const quotes = await response.json();
-          
-          if (quotes && quotes.length > 0) {
-            // Pilih quote secara random
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            setQuote(randomQuote.text);
-            setAuthor(randomQuote.author?.replace(', type.fit', '') || "Mamas");
+          const response = await fetch('/api/quote');
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch quote: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          // Log the fetched data to inspect
+          console.log('Fetched data:', data);
+
+          // Update the quote and author state
+          if (data && data.quote && data.author) {
+            setQuote(data.quote); // Update quote state
+            setAuthor(data.author); // Update author state
           } else {
-            throw new Error('No quotes found');
+            throw new Error('No valid quote or author in the response');
           }
         } catch (error) {
           console.error('Error fetching quote:', error);
-          // Fallback quotes jika API gagal
-          setQuote("Manfaatkan waktumu dengan bijak, karena waktu tidak pernah menunggu siapapun.");
-          setAuthor("Mamas");
+
+          // Set fallback quote and author if there's an error
+          setQuote('Manfaatkan waktumu dengan bijak, karena waktu tidak pernah menunggu siapapun.');
+          setAuthor('Mamas');
         } finally {
-          // Mulai transisi fade in
           setFadeState('in');
         }
-      }, 500); // Waktu fade out
+      }, 500);
     } catch (error) {
       console.error('Error in fetch quote flow:', error);
       setFadeState('in');
@@ -54,12 +55,11 @@ export default function ActivityImage() {
     const updateImage = () => {
       const now = new Date();
       const hour = now.getHours();
-      
+
       let imageSrc = '';
       let activity = '';
       let type = '';
-      
-      // Logika untuk menentukan gambar dan aktivitas berdasarkan waktu
+
       if (hour >= 0 && hour < 8) {
         imageSrc = '/dataPics/dedekSleeping.jpg';
         activity = 'Dedek Sedang tidur';
@@ -77,28 +77,21 @@ export default function ActivityImage() {
         activity = 'Dedek Sedang bermain';
         type = 'playing';
       }
-      
+
       setCurrentImage(imageSrc);
       setActivityText(activity);
-      
-      // Perbarui tipe aktivitas
+
       if (type !== activityType) {
         setActivityType(type);
       }
     };
-    
-    // Update gambar saat pertama kali komponen dimuat
+
     updateImage();
-    
-    // Ambil quote pertama kali
     fetchQuote();
-    
-    // Update gambar setiap menit
-    const imageInterval = setInterval(updateImage, 60000);
-    
-    // Refresh quotes setiap 5 detik
-    const quoteInterval = setInterval(fetchQuote, 5000);
-    
+
+    const imageInterval = setInterval(updateImage, 60000); // Update every 1 minute
+    const quoteInterval = setInterval(fetchQuote, 15000); // Update every 1 hour
+
     return () => {
       clearInterval(imageInterval);
       clearInterval(quoteInterval);
@@ -106,30 +99,31 @@ export default function ActivityImage() {
   }, [activityType]);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative w-[300px] h-[300px] mb-4 overflow-hidden rounded-lg shadow-lg">
+    <div className="flex flex-col md:flex-row items-center justify-center md:space-x-6">
+      {/* Image Section */}
+      <div className="relative w-full md:w-[300px] h-[300px] mb-4 md:mb-0 overflow-hidden rounded-lg shadow-lg">
         {currentImage && (
-          <Image 
-            src={currentImage} 
-            alt="Activity Image" 
-            fill 
+          <Image
+            src={currentImage}
+            alt="Activity Image"
+            fill
             className="object-cover"
             priority
           />
         )}
       </div>
-      <p className="text-xl font-medium text-pink-700 mb-6">{activityText}</p>
-      
-      {/* Quote section dengan animasi */}
-      <div className="max-w-md text-center px-4">
-        <h2 className="text-2xl font-bold mb-2 text-pink-600">Inspirasi Hari Ini</h2>
-        <div 
-          className={`transition-opacity duration-500 ease-in-out ${
-            fadeState === 'in' ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <p className="text-lg text-gray-700 italic mb-2">"{quote}"</p>
-          {author && <p className="text-sm text-gray-500">- {author}</p>}
+
+      {/* Text Section */}
+      <div className="text-center md:text-left">
+        <p className="text-xl font-medium text-pink-700 mb-6">{activityText}</p>
+        <div className="max-w-md px-4">
+          <h2 className="text-2xl font-bold mb-2 text-pink-600">Inspirasi Hari Ini dari Mamas</h2>
+          <div
+            className={`transition-opacity duration-500 ease-in-out ${fadeState === 'in' ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <p className="text-lg text-gray-700 italic mb-2">"{quote}"</p>
+            {author && <p className="text-sm text-gray-500">- {author}</p>}
+          </div>
         </div>
       </div>
     </div>
