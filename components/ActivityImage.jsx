@@ -90,7 +90,7 @@ export default function ActivityImage() {
     fetchQuote();
 
     const imageInterval = setInterval(updateImage, 60000); // Update every 1 minute
-    const quoteInterval = setInterval(fetchQuote, 15000); // Update every 1 hour
+    const quoteInterval = setInterval(fetchQuote, 360000); // Update every 1 hour
 
     return () => {
       clearInterval(imageInterval);
