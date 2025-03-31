@@ -7,6 +7,7 @@ export default function ActivityImage() {
   const [activityText, setActivityText] = useState('');
   const [activityType, setActivityType] = useState('working');
   const [quote, setQuote] = useState('Waktu adalah emas');
+  const [translatedQuote, setTranslatedQuote] = useState('');
   const [author, setAuthor] = useState('');
   const [fadeState, setFadeState] = useState('in'); // 'in' atau 'out'
 
@@ -32,6 +33,11 @@ export default function ActivityImage() {
           if (data && data.quote && data.author) {
             setQuote(data.quote); // Update quote state
             setAuthor(data.author); // Update author state
+            
+            // Set translated quote if available
+            if (data.translatedQuote) {
+              setTranslatedQuote(data.translatedQuote);
+            }
           } else {
             throw new Error('No valid quote or author in the response');
           }
@@ -41,6 +47,7 @@ export default function ActivityImage() {
           // Set fallback quote and author if there's an error
           setQuote('Manfaatkan waktumu dengan bijak, karena waktu tidak pernah menunggu siapapun.');
           setAuthor('Mamas');
+          setTranslatedQuote(''); // Clear translation on error
         } finally {
           setFadeState('in');
         }
@@ -122,6 +129,10 @@ export default function ActivityImage() {
             className={`transition-opacity duration-500 ease-in-out ${fadeState === 'in' ? 'opacity-100' : 'opacity-0'}`}
           >
             <p className="text-lg text-gray-700 italic mb-2">"{quote}"</p>
+            {/* Tampilkan terjemahan jika tersedia */}
+            {translatedQuote && (
+              <p className="text-md text-gray-600 italic mb-2">Terjemahan: <br/>"{translatedQuote}"</p>
+            )}
             {author && <p className="text-sm text-gray-500">- {author}</p>}
           </div>
         </div>
