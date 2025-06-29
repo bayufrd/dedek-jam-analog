@@ -68,19 +68,19 @@ export default function ActivityImage() {
       let type = '';
 
       if (hour >= 0 && hour < 8) {
-        imageSrc = '/dataPics/dedekSleeping.jpg';
+        imageSrc = '/dataPics/dedekSleeping.svg';
         activity = 'Dedek Sedang tidur';
         type = 'sleeping';
       } else if (hour >= 8 && hour < 16) {
-        imageSrc = '/dataPics/dedekWorking.jpg';
+        imageSrc = '/dataPics/dedekWorking.svg';
         activity = 'Dedek Sedang bekerja';
         type = 'working';
       } else if (hour >= 16 && hour < 18) {
-        imageSrc = '/dataPics/dedekCooking.jpg';
+        imageSrc = '/dataPics/dedekCooking.svg';
         activity = 'Dedek Sedang memasak';
         type = 'cooking';
       } else {
-        imageSrc = '/dataPics/dedekPlaying.jpg';
+        imageSrc = '/dataPics/dedekPlaying.svg';
         activity = 'Dedek Sedang bermain';
         type = 'playing';
       }
