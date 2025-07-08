@@ -67,21 +67,29 @@ export default function ActivityImage() {
       let activity = '';
       let type = '';
 
-      if (hour >= 0 && hour < 8) {
+      if (hour >= 22 && hour < 6) {
         imageSrc = '/dataPics/dedekSleeping.svg';
         activity = 'Dedek Sedang tidur';
         type = 'sleeping';
-      } else if (hour >= 8 && hour < 16) {
-        imageSrc = '/dataPics/dedekWorking.svg';
-        activity = 'Dedek Sedang bekerja';
-        type = 'working';
-      } else if (hour >= 16 && hour < 18) {
+      } else if (hour >= 6 && hour < 9) {
         imageSrc = '/dataPics/dedekCooking.svg';
         activity = 'Dedek Sedang memasak';
         type = 'cooking';
-      } else {
+      } else if (hour >= 9 && hour < 13) {
+        imageSrc = '/dataPics/dedekWorking.svg';
+        activity = 'Dedek Sedang bekerja';
+        type = 'working';
+      }  else if (hour >= 13 && hour < 14) {
+        imageSrc = '/dataPics/dedekBreak.svg';
+        activity = 'Dedek Sedang Istirahat';
+        type = 'working';
+      } else if (hour >= 14 && hour < 17) {
+        imageSrc = '/dataPics/dedekWorking.svg';
+        activity = 'Dedek Sedang bekerja';
+        type = 'working';
+      }else {
         imageSrc = '/dataPics/dedekPlaying.svg';
-        activity = 'Dedek Sedang bermain';
+        activity = 'Dedek Sedang bermain bersama Momo dan Mamay';
         type = 'playing';
       }
 
@@ -139,4 +147,49 @@ export default function ActivityImage() {
       </div>
     </div>
   );
+}
+
+// Memfetch data dengan getStaticProps
+export async function getStaticProps() {
+  try {
+    const response = await fetch('https://zenquotes.io/api/random');
+    const data = await response.json();
+
+    let translatedQuote = '';
+    if (Array.isArray(data) && data.length > 0 && data[0].q && data[0].a) {
+      const quote = data[0].q;
+      const author = data[0].a;
+
+      // Terjemahkan menggunakan MyMemory API
+      const encodedText = encodeURIComponent(quote);
+      const translationUrl = `https://api.mymemory.translated.net/get?q=${encodedText}&langpair=en|id`;
+
+      const translationResponse = await fetch(translationUrl);
+      const translationData = await translationResponse.json();
+
+      if (translationData && translationData.responseData && translationData.responseData.translatedText) {
+        translatedQuote = translationData.responseData.translatedText;
+      }
+
+      return {
+        props: {
+          quote: quote,
+          author: author,
+          translatedQuote: translatedQuote,
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching quote:', error);
+    // Fallback jika error
+    return {
+      props: {
+        quote: "Manfaatkan waktumu dengan bijak, karena waktu tidak pernah menunggu siapapun.",
+        author: "Mamas",
+        translatedQuote: "",
+      },
+    };
+  }
+
+  return { props: { quote: "", author: "", translatedQuote: "" } };
 }
