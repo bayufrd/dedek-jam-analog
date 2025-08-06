@@ -68,15 +68,15 @@ export default function ActivityImage() {
       let type = '';
 
       if (hour >= 22 && hour < 6) {
-        imageSrc = '/dataPics/dedekSleeping.svg';
+        imageSrc = '/dataPics/dedekSleeping.jpg';
         activity = 'Dedek Sedang tidur';
         type = 'sleeping';
       } else if (hour >= 6 && hour < 9) {
-        imageSrc = '/dataPics/dedekCooking.svg';
+        imageSrc = '/dataPics/dedekCooking.jpg';
         activity = 'Dedek Sedang memasak';
         type = 'cooking';
       } else if (hour >= 9 && hour < 13) {
-        imageSrc = '/dataPics/dedekWorking.svg';
+        imageSrc = '/dataPics/dedekWorking.jpg';
         activity = 'Dedek Sedang bekerja';
         type = 'working';
       }  else if (hour >= 13 && hour < 14) {
@@ -84,11 +84,11 @@ export default function ActivityImage() {
         activity = 'Dedek Sedang Istirahat';
         type = 'working';
       } else if (hour >= 14 && hour < 17) {
-        imageSrc = '/dataPics/dedekWorking.svg';
+        imageSrc = '/dataPics/dedekWorking.jpg';
         activity = 'Dedek Sedang bekerja';
         type = 'working';
       }else {
-        imageSrc = '/dataPics/dedekPlaying.svg';
+        imageSrc = '/dataPics/dedekPlaying.jpg';
         activity = 'Dedek Sedang bermain bersama Momo dan Mamay';
         type = 'playing';
       }
